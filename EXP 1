@@ -1,0 +1,43 @@
+//Backend Code (Flask App)
+
+from flask import Flask, render_template, request, redirect
+
+app = Flask(__name__)
+
+# In-memory storage (simulates cloud database)
+notes = []
+
+@app.route("/", methods=["GET", "POST"])
+def home():
+    if request.method == "POST":
+        note = request.form["note"]
+        notes.append(note)
+        return redirect("/")
+    return render_template("index.html", notes=notes)
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
+
+//frontend code
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cloud Notes - SaaS</title>
+</head>
+<body>
+    <h2>Cloud Notes Application (SaaS)</h2>
+
+    <form method="POST">
+        <input type="text" name="note" placeholder="Enter your note" required>
+        <button type="submit">Save</button>
+    </form>
+
+    <h3>Saved Notes:</h3>
+    <ul>
+        {% for note in notes %}
+            <li>{{ note }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
