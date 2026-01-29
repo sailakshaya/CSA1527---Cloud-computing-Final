@@ -1,0 +1,62 @@
+//Backend Code (Flask)
+
+from flask import Flask, render_template, request, redirect
+
+app = Flask(__name__)
+
+# Simulated cloud database (in-memory)
+reservations = []
+
+@app.route("/", methods=["GET", "POST"])
+def home():
+    if request.method == "POST":
+        reservation = {
+            "name": request.form["name"],
+            "from_city": request.form["from_city"],
+            "to_city": request.form["to_city"],
+            "date": request.form["date"]
+        }
+        reservations.append(reservation)
+        return redirect("/")
+    return render_template("index.html", reservations=reservations)
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
+
+//Frontend Code (HTML)
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Flight Reservation System - SaaS</title>
+</head>
+<body>
+    <h2>Cloud-Based Flight Reservation System (SaaS)</h2>
+
+    <form method="POST">
+        <input type="text" name="name" placeholder="Passenger Name" required><br><br>
+        <input type="text" name="from_city" placeholder="From City" required><br><br>
+        <input type="text" name="to_city" placeholder="To City" required><br><br>
+        <input type="date" name="date" required><br><br>
+        <button type="submit">Book Flight</button>
+    </form>
+
+    <h3>Booked Flights</h3>
+    <table border="1">
+        <tr>
+            <th>Name</th>
+            <th>From</th>
+            <th>To</th>
+            <th>Date</th>
+        </tr>
+        {% for r in reservations %}
+        <tr>
+            <td>{{ r.name }}</td>
+            <td>{{ r.from_city }}</td>
+            <td>{{ r.to_city }}</td>
+            <td>{{ r.date }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
