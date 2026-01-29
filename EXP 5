@@ -1,0 +1,78 @@
+# Cloud-Based Library Book Reservation System – SIMATS
+# SaaS Application (Single File)
+
+from flask import Flask, request, redirect
+
+app = Flask(__name__)
+
+# Simulated cloud database (in-memory)
+reservations = []
+
+@app.route("/", methods=["GET", "POST"])
+def home():
+    html = """
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>SIMATS Library Book Reservation System (SaaS)</title>
+    </head>
+    <body>
+        <h2>SIMATS Library Book Reservation System</h2>
+
+        <form method="POST">
+            <input type="text" name="student" placeholder="Student Name" required><br><br>
+
+            <input type="text" name="book" placeholder="Book Title" required><br><br>
+
+            <select name="department" required>
+                <option value="">Select Department</option>
+                <option>CSE</option>
+                <option>ECE</option>
+                <option>EEE</option>
+                <option>Mechanical</option>
+                <option>Civil</option>
+            </select><br><br>
+
+            <input type="date" name="date" required><br><br>
+
+            <button type="submit">Reserve Book</button>
+        </form>
+
+        <h3>Reserved Books</h3>
+        <table border="1">
+            <tr>
+                <th>Student</th>
+                <th>Book</th>
+                <th>Department</th>
+                <th>Reservation Date</th>
+            </tr>
+    """
+
+    if request.method == "POST":
+        reservations.append({
+            "student": request.form["student"],
+            "book": request.form["book"],
+            "department": request.form["department"],
+            "date": request.form["date"]
+        })
+        return redirect("/")
+
+    for r in reservations:
+        html += f"""
+            <tr>
+                <td>{r['student']}</td>
+                <td>{r['book']}</td>
+                <td>{r['department']}</td>
+                <td>{r['date']}</td>
+            </tr>
+        """
+
+    html += """
+        </table>
+    </body>
+    </html>
+    """
+    return html
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
