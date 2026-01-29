@@ -1,0 +1,92 @@
+# Cloud-Based Property Buying & Rental System (Chennai) – SaaS
+# Backend + Frontend combined in one file
+
+from flask import Flask, request, redirect
+
+app = Flask(__name__)
+
+# Simulated cloud database (in-memory)
+properties = []
+
+@app.route("/", methods=["GET", "POST"])
+def home():
+    html = """
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Property Buying & Rental - Chennai (SaaS)</title>
+    </head>
+    <body>
+        <h2>Cloud-Based Property Buying & Rental System (Chennai)</h2>
+
+        <form method="POST">
+            <input type="text" name="owner" placeholder="Owner Name" required><br><br>
+
+            <select name="location" required>
+                <option value="">Select Location</option>
+                <option>Adyar</option>
+                <option>T Nagar</option>
+                <option>Velachery</option>
+                <option>Tambaram</option>
+                <option>OMR</option>
+            </select><br><br>
+
+            <select name="type" required>
+                <option value="">Property Type</option>
+                <option>Apartment</option>
+                <option>Independent House</option>
+                <option>Commercial</option>
+            </select><br><br>
+
+            <input type="number" name="price" placeholder="Price (INR)" required><br><br>
+
+            <select name="purpose" required>
+                <option value="">Purpose</option>
+                <option>Buy</option>
+                <option>Rent</option>
+            </select><br><br>
+
+            <button type="submit">Add Property</button>
+        </form>
+
+        <h3>Available Properties</h3>
+        <table border="1">
+            <tr>
+                <th>Owner</th>
+                <th>Location</th>
+                <th>Type</th>
+                <th>Price</th>
+                <th>Purpose</th>
+            </tr>
+    """
+
+    if request.method == "POST":
+        properties.append({
+            "owner": request.form["owner"],
+            "location": request.form["location"],
+            "type": request.form["type"],
+            "price": request.form["price"],
+            "purpose": request.form["purpose"]
+        })
+        return redirect("/")
+
+    for p in properties:
+        html += f"""
+            <tr>
+                <td>{p['owner']}</td>
+                <td>{p['location']}</td>
+                <td>{p['type']}</td>
+                <td>{p['price']}</td>
+                <td>{p['purpose']}</td>
+            </tr>
+        """
+
+    html += """
+        </table>
+    </body>
+    </html>
+    """
+    return html
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
