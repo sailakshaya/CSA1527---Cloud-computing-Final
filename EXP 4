@@ -1,0 +1,77 @@
+# Cloud-Based Car Booking Reservation System – SaaS
+# Single-file application (Backend + Frontend)
+
+from flask import Flask, request, redirect
+
+app = Flask(__name__)
+
+# Simulated cloud database (in-memory)
+bookings = []
+
+@app.route("/", methods=["GET", "POST"])
+def home():
+    html = """
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Car Booking Reservation System (SaaS)</title>
+    </head>
+    <body>
+        <h2>Cloud-Based Car Booking Reservation System</h2>
+
+        <form method="POST">
+            <input type="text" name="name" placeholder="Customer Name" required><br><br>
+
+            <select name="car" required>
+                <option value="">Select Car</option>
+                <option>Sedan</option>
+                <option>SUV</option>
+                <option>Hatchback</option>
+                <option>Luxury</option>
+            </select><br><br>
+
+            <input type="date" name="date" required><br><br>
+
+            <input type="number" name="days" placeholder="Number of Days" required><br><br>
+
+            <button type="submit">Book Car</button>
+        </form>
+
+        <h3>Booked Cars</h3>
+        <table border="1">
+            <tr>
+                <th>Name</th>
+                <th>Car Type</th>
+                <th>Date</th>
+                <th>Days</th>
+            </tr>
+    """
+
+    if request.method == "POST":
+        bookings.append({
+            "name": request.form["name"],
+            "car": request.form["car"],
+            "date": request.form["date"],
+            "days": request.form["days"]
+        })
+        return redirect("/")
+
+    for b in bookings:
+        html += f"""
+            <tr>
+                <td>{b['name']}</td>
+                <td>{b['car']}</td>
+                <td>{b['date']}</td>
+                <td>{b['days']}</td>
+            </tr>
+        """
+
+    html += """
+        </table>
+    </body>
+    </html>
+    """
+    return html
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
